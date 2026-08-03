@@ -7,8 +7,7 @@ from app.config import Settings
 from app.database import Base, engine
 from app.database import SessionLocal
 from app.services.auth_service import create_admin_if_not_exists
-from app.routers import auth, account_create
-
+from app.routers import auth, account_create, create_camp, camp_doctor
 
 settings = Settings()
 
@@ -36,6 +35,8 @@ app = FastAPI(
 
 app.include_router(auth.router)
 app.include_router(account_create.router)
+app.include_router(create_camp.router)
+app.include_router(camp_doctor.router)
 
 
 # Add CORS middleware

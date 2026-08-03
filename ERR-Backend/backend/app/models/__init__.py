@@ -5,7 +5,6 @@ from app.models.User import User
 from app.models.camp import Camp
 from app.models.camp_doctor import CampDoctor
 from app.models.consultation import Consultation
-from app.models.doctor import Doctor
 from app.models.inventory import Inventory
 from app.models.medicines import Medicine
 from app.models.prescription import Prescription

@@ -10,9 +10,10 @@ class Camp(Base):
     camp_name = Column(String(50), nullable = False)
     location = Column(String(100), nullable = False)
     organizer = Column(String(100), nullable = False)
+    notes = Column(Text, default = None)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
     def __repr__(self):
-        return f"<Camp {self.name} >"
+        return f"<Camp {self.camp_name} >"
