@@ -7,6 +7,8 @@ from app.config import Settings
 from app.database import Base, engine
 from app.database import SessionLocal
 from app.services.auth_service import create_admin_if_not_exists
+from app.routers import auth, account_create
+
 
 settings = Settings()
 
@@ -30,6 +32,10 @@ app = FastAPI(
     version="0.1.0",
     debug=True,
 )
+
+
+app.include_router(auth.router)
+app.include_router(account_create.router)
 
 
 # Add CORS middleware

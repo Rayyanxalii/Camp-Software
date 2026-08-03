@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 class LoginRequest(BaseModel):
-    username: str = Field(..., description="Username of the user")
+    login_id: str = Field(..., description="Login ID of the user")
     password: str = Field(..., description="Password of the user")
     
 
