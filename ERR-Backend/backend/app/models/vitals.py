@@ -13,15 +13,23 @@ class Vitals(Base):
     __tablename__ = "vitals"
 
     vital_id = Column(Integer, primary_key=True)
-    registration_id = Column(Integer, ForeignKey("registrations.registration_id"), nullable=False, unique = True )
+    
+    registration_id = Column(
+    Integer,
+    ForeignKey("registrations.registration_id"),
+    nullable=False,
+    unique=True
+)
 
     blood_pressure = Column(String(20), nullable=False)
-    heart_rate = Column(String(20), nullable=False)
-    respiratory_rate = Column(String(20), nullable=False)
-    temperature = Column(Float, nullable=False)
-    weight = Column(Float, nullable=False)
+    heart_rate = Column(Integer, nullable=True)
+    respiratory_rate = Column(Integer, nullable=True)
+    temperature = Column(Float, nullable=True)
+    weight = Column(Float, nullable=True)
     
     history = Column(Text, nullable=True)
+    
+    
     
 
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -35,5 +43,4 @@ class Vitals(Base):
         return (
             f"<Vitals id={self.vital_id},"
             f"Registration={self.registration_id}, "
-            f"Doctor={self.doctor_id}>"
         )

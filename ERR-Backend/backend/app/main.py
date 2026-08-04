@@ -7,7 +7,7 @@ from app.config import settings
 from app.database import Base, engine
 from app.database import SessionLocal
 from app.services.auth_service import create_admin_if_not_exists
-from app.routers import auth, account_create, create_camp, camp_doctor, register_patient
+from app.routers import auth, account_create, create_camp, camp_doctor, register_patient, vitals_create,inventory
 
 
 if __package__ in {None, ""}:
@@ -37,6 +37,8 @@ app.include_router(account_create.router)
 app.include_router(create_camp.router)
 app.include_router(camp_doctor.router)
 app.include_router(register_patient.router)
+app.include_router(vitals_create.router)
+app.include_router(inventory.router)
 
 # Add CORS middleware
 # Configure CORS origins from settings if provided; otherwise allow all with a warning

@@ -6,16 +6,16 @@ from app.database import Base
 class Inventory(Base):
     __tablename__ = "inventory"
 
-    inventory_id = Column(Integer, primary_key=True)
-    medicine_id = Column(Integer, ForeignKey("medicines.medicine_id"), nullable=False)
-    
-    current_stock = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    medicine_id = Column(Integer, primary_key=True)
 
-    def __repr__(self):
-        return (
-            f"<Inventory id={self.inventory_id},"
-            f"Medicine={self.medicine_id}, "
-            f"Quantity={self.current_stock}>"
-        )
+    medicine_name = Column(String(200), nullable=False)
+    strength = Column(String(50), nullable=True)      # 500mg
+    dosage_form = Column(String(50), nullable=False)  # Tablet, Syrup, Injection
+    quantity = Column(Integer, nullable=False)
+
+    manufacturer = Column(String(100), nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime,
+                        default=datetime.utcnow,
+                        onupdate=datetime.utcnow)

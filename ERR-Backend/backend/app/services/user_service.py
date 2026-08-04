@@ -30,12 +30,12 @@ def create_user(
             detail="User with this login ID already exists"
         )
 
-    # Basic password strength validation
-    # if not _is_strong_password(request.password):
-    #     raise HTTPException(
-    #         status_code=status.HTTP_400_BAD_REQUEST,
-    #         detail="Password must be at least 8 characters and include upper, lower and digits"
-    #     )
+    #Basic password strength validation
+    if not _is_strong_password(request.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 8 characters and include upper, lower and digits"
+        )
 
     # Validate role
     if not isinstance(request.role, UserRole):
