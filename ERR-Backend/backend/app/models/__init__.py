@@ -1,6 +1,6 @@
 """Models package - re-exports all SQLAlchemy models"""
 
-from app.models.Patient import Patient, GenderEnum
+from app.models.patient import Patient, GenderEnum
 from app.models.User import User
 from app.models.camp import Camp
 from app.models.camp_doctor import CampDoctor

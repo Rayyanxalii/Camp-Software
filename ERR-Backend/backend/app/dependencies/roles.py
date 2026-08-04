@@ -14,3 +14,15 @@ def require_admin(
         )
 
     return current_user
+
+
+def require_receptionist(
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.RECEPTIONIST:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Receptionist access required"
+        )
+
+    return current_user

@@ -18,12 +18,12 @@ class Patient(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable = False)
-    date_of_birth = Column(Date)
+    date_of_birth = Column(Date, default=None)
     gender = Column(Enum(GenderEnum))
-    national_id = Column(String(11), unique=True, nullable = True)
-    phone = Column(Integer, nullable = True)
-    address = Column(Text, nullable = True)
-    notes = Column(Text, nullable = True)
+    national_id = Column(String(13), unique=True, default=None)
+    phone = Column(String(11), nullable = True, default = 0)
+    address = Column(Text, nullable = True, default = None)
+    notes = Column(Text, nullable = True, default = None)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
