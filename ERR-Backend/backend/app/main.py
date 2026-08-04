@@ -3,13 +3,12 @@ from pathlib import Path
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.config import Settings
+from app.config import settings
 from app.database import Base, engine
 from app.database import SessionLocal
 from app.services.auth_service import create_admin_if_not_exists
 from app.routers import auth, account_create, create_camp, camp_doctor, register_patient
 
-settings = Settings()
 
 if __package__ in {None, ""}:
     sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -40,9 +39,19 @@ app.include_router(camp_doctor.router)
 app.include_router(register_patient.router)
 
 # Add CORS middleware
+# Configure CORS origins from settings if provided; otherwise allow all with a warning
+origins = ["*"]
+if settings.ALLOWED_ORIGINS:
+    origins = [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
+    if not origins:
+        origins = ["*"]
+
+if origins == ["*"]:
+    logger.warning("CORS configured to allow all origins. Set ALLOWED_ORIGINS to restrict this in production.")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -54,6 +63,21 @@ async def startup():
     """Initialize database and create default admin"""
 
     try:
+        # Validate essential settings
+        missing = []
+        if not settings.SECRET_KEY:
+            missing.append("SECRET_KEY")
+        if not settings.ALGORITHM:
+            missing.append("ALGORITHM")
+        if not settings.ACCESS_TOKEN_EXPIRE_MINUTES:
+            missing.append("ACCESS_TOKEN_EXPIRE_MINUTES")
+        if not settings.DATABASE_URL:
+            missing.append("DATABASE_URL")
+
+        if missing:
+            logger.error(f"Missing required settings: {missing}")
+            raise RuntimeError("Invalid configuration; check environment variables")
+
         # Create all tables
         Base.metadata.create_all(bind=engine)
         logger.info("Database tables initialized")
