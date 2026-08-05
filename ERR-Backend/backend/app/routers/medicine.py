@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies.roles import require_doctor
-from app.schemas.inventory import MedicineAvailabilityResponse
+from app.schemas.medicine import MedicineAvailabilityResponse
 from app.services.medicine import get_all_available_medicines
 
 router = APIRouter(
