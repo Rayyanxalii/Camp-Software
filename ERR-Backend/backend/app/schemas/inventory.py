@@ -27,3 +27,17 @@ class InventoryResponse(BaseModel):
     class Config:
         from_attributes = True
         
+
+
+class InventoryResponse(BaseModel):
+    medicine_id: int
+    medicine_name: str
+    strength: str | None
+    dosage_form: str
+    quantity: int
+    reserved_quantity: int
+    available_quantity: int
+
+    class Config:
+        from_attributes = True  
+        

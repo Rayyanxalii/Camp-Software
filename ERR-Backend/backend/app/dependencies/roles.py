@@ -36,5 +36,5 @@ def require_doctor(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Doctor access required"
         )
-
+        
     return current_user

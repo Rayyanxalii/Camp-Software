@@ -16,12 +16,13 @@ class Prescription(Base):
     prescription_id = Column(Integer, primary_key=True)
     
     consultation_id = Column(Integer, ForeignKey("consultations.consultation_id"), nullable=False)
-    medicine_id = Column(Integer, ForeignKey("medicines.medicine_id"), nullable=False)
+    medicine_id = Column(Integer, ForeignKey("inventory.medicine_id"), nullable=False)
     
-    medication_name = Column(String(100), nullable=False)
-    dosage = Column(String(100), nullable=False)
-    frequency = Column(String(100), nullable=False)
-    duration = Column(String(100), nullable=False)
+    # dosage = Column(String(50), nullable=False) # "2 tablets", "10 ml"
+   
+    frequency = Column(String(30), nullable=False)       # "1-1-1"
+    duration_days = Column(Integer, nullable=False)      # 5
+    instructions = Column(Text, nullable=True)           # After meals, Before sleep, etc.
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(
@@ -31,7 +32,7 @@ class Prescription(Base):
     )
 
     __table_args__ = (
-        UniqueConstraint("consultation_id", "medication_name", name="uq_consultation_medication"),
+        UniqueConstraint("consultation_id", "medicine_id", name="uq_consultation_medicine"),
     )
 
     def __repr__(self):
@@ -40,3 +41,6 @@ class Prescription(Base):
             f"Consultation={self.consultation_id}, "
             f"Medication={self.medication_name}>"
         )
+        
+        
+    

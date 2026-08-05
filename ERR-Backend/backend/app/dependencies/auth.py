@@ -25,9 +25,11 @@ def get_current_user(
 
     try:
         payload = verify_access_token(token)
+        
     except HTTPException:
         # Pass through HTTPExceptions raised during token verification
         raise
+    
     except Exception:
         # Any other unexpected error
         raise HTTPException(
@@ -51,6 +53,7 @@ def get_current_user(
 
     try:
         user_id_int = int(user_id)
+        
     except (ValueError, TypeError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

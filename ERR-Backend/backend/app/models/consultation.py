@@ -14,10 +14,9 @@ class Consultation(Base):
 
     consultation_id = Column(Integer, primary_key=True)
     registration_id = Column(Integer, ForeignKey("registrations.registration_id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
+    camp_doctor_id = Column(Integer, ForeignKey("camp_doctors.camp_doctor_id"), nullable = False)
 
     diagnosis = Column(Text, nullable=False)
-    prescription = Column(Text, nullable=True)
     notes = Column(Text, nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -31,5 +30,8 @@ class Consultation(Base):
         return (
             f"<Consultation id={self.consultation_id},"
             f"Registration={self.registration_id}, "
-            f"Doctor={self.doctor_id}>"
+            f"CampDoctor={self.camp_doctor_id}>"
         )
+        
+        
+    

@@ -12,10 +12,15 @@ class Inventory(Base):
     strength = Column(String(50), nullable=True)      # 500mg
     dosage_form = Column(String(50), nullable=False)  # Tablet, Syrup, Injection
     quantity = Column(Integer, nullable=False)
-
     manufacturer = Column(String(100), nullable=True)
+    
+    reserved_quantity = Column(Integer, nullable=False, default=0)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime,
                         default=datetime.utcnow,
                         onupdate=datetime.utcnow)
+    
+    @property
+    def available_quantity(self):
+        return self.quantity - self.reserved_quantity
