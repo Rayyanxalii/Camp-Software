@@ -20,6 +20,7 @@ class Prescription(Base):
     
     # dosage = Column(String(50), nullable=False) # "2 tablets", "10 ml"
    
+    dispense_quantity = Column(Integer, nullable=False)
     frequency = Column(String(30), nullable=False)       # "1-1-1"
     duration_days = Column(Integer, nullable=False)      # 5
     instructions = Column(Text, nullable=True)           # After meals, Before sleep, etc.

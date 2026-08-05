@@ -11,30 +11,27 @@ from app.models.camp_doctor import CampDoctor
 from app.schemas.consultation import CreateConsultation
 
 
-
 def create_consultation(
     db: Session,
     consultation_data: CreateConsultation,
     doctor
 ):
     try:
-        
-        
-        # Get logged-in doctor's camp_doctor_id
+
+        # Get logged-in doctor's camp assignment
         camp_doctor = (
             db.query(CampDoctor)
             .filter(CampDoctor.user_id == doctor.user_id)
             .first()
         )
-        
+
         if not camp_doctor:
-         raise HTTPException(
-              status_code=status.HTTP_403_FORBIDDEN,
-              detail="Doctor is not assigned to this camp."
-                    )
-        
-        
-        # Check registration exists
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Doctor is not assigned to this camp."
+            )
+
+        # Find patient registration
         registration = (
             db.query(Registration)
             .filter(
@@ -65,58 +62,24 @@ def create_consultation(
                 detail="Patient vitals have not been recorded."
             )
 
-        
-            
+        # Prevent duplicate consultation
         existing = (
-        db.query(Consultation)
-        .filter(
-            Consultation.registration_id == registration.registration_id
+            db.query(Consultation)
+            .filter(
+                Consultation.registration_id == registration.registration_id
+            )
+            .first()
         )
-        .first()
-    )
 
         if existing:
             raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Consultation for this patient already exists."
-        )
-            
-        inventory = (
-             db.query(Inventory)
-                 .filter(
-                        Inventory.medicine_id == medicine.medicine).first()
-                                                            )
-
-        if not inventory:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Medicine ID {medicine.medicine_id} not found."
-            )
-
-        available_quantity = inventory.quantity - inventory.reserved_quantity
-
-        if available_quantity <= 0:
-            raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"{inventory.medicine_name} is out of stock."
+                detail="Consultation for this patient already exists."
             )
 
-        # Reserve one strip/bottle
-        inventory.reserved_quantity += 1
-                
-        # Create consultation
-        consultation = Consultation(
-            registration_id= registration.registration_id,
-            camp_doctor_id= camp_doctor.camp_doctor_id,
-            diagnosis=consultation_data.diagnosis,
-            notes=consultation_data.notes,
-        )
-
-        db.add(consultation)
-        db.flush()   # Generates consultation_id
-
-
-        # Create prescriptions
+        # -----------------------------
+        # Check and reserve medicines
+        # -----------------------------
         for medicine in consultation_data.medicines:
 
             inventory = (
@@ -133,9 +96,41 @@ def create_consultation(
                     detail=f"Medicine ID {medicine.medicine_id} not found."
                 )
 
+            # Check available stock
+            if inventory.available_quantity < medicine.dispense_quantity:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=(
+                        f"Only {inventory.available_quantity} "
+                        f"{inventory.medicine_name} available."
+                    )
+                )
+
+            # Reserve stock
+            inventory.reserved_quantity += medicine.dispense_quantity
+
+        # -----------------------------
+        # Create consultation
+        # -----------------------------
+        consultation = Consultation(
+            registration_id=registration.registration_id,
+            camp_doctor_id=camp_doctor.camp_doctor_id,
+            diagnosis=consultation_data.diagnosis,
+            notes=consultation_data.notes,
+        )
+
+        db.add(consultation)
+        db.flush()
+
+        # -----------------------------
+        # Create prescriptions
+        # -----------------------------
+        for medicine in consultation_data.medicines:
+
             prescription = Prescription(
                 consultation_id=consultation.consultation_id,
                 medicine_id=medicine.medicine_id,
+                dispense_quantity=medicine.dispense_quantity,
                 frequency=medicine.frequency,
                 duration_days=medicine.duration_days,
             )
@@ -143,7 +138,6 @@ def create_consultation(
             db.add(prescription)
 
         db.commit()
-
         db.refresh(consultation)
 
         return consultation
@@ -158,5 +152,3 @@ def create_consultation(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
         )
-        
-        
