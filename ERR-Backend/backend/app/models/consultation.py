@@ -4,7 +4,7 @@ from sqlalchemy import (
     Integer,
     DateTime,
     ForeignKey,
-    String, Text, Float
+    String, Text, Float, Boolean
 )
 from app.database import Base
 
@@ -15,9 +15,9 @@ class Consultation(Base):
     consultation_id = Column(Integer, primary_key=True)
     registration_id = Column(Integer, ForeignKey("registrations.registration_id"), nullable=False)
     camp_doctor_id = Column(Integer, ForeignKey("camp_doctors.camp_doctor_id"), nullable = False)
-
     diagnosis = Column(Text, nullable=False)
     notes = Column(Text, nullable=True)
+    is_dispensed = Column(Boolean, default = False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(

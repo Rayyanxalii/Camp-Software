@@ -38,3 +38,15 @@ def require_doctor(
         )
         
     return current_user
+
+
+def require_pharmacist(
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role != UserRole.PHARMACIST:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Doctor access required"
+            )
+            
+    return current_user

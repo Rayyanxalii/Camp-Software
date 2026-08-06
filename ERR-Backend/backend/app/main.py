@@ -7,7 +7,7 @@ from app.config import settings
 from app.database import Base, engine
 from app.database import SessionLocal
 from app.services.auth_service import create_admin_if_not_exists
-from app.routers import auth, account_management, create_camp, camp_doctor, register_patient, vitals_create,inventory, consultation, medicine
+from app.routers import auth, account_management, create_camp, camp_doctor, register_patient, vitals_create,inventory, consultation, medicine, pharmacy
 
 
 if __package__ in {None, ""}:
@@ -41,6 +41,8 @@ app.include_router(vitals_create.router)
 app.include_router(inventory.router)
 app.include_router(consultation.router)
 app.include_router(medicine.router)
+app.include_router(pharmacy.router)
+
 
 
 # Add CORS middleware
